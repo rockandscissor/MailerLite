@@ -1,0 +1,6 @@
+{
+    "name": "rock-scissor/mailerlite",
+    "require": {
+        "mailerlite/mailerlite-api-v2-php-sdk": "*"
+    }
+}
