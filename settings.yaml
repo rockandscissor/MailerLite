@@ -2,6 +2,7 @@ fields:
   mailerlite_api_key:
     type: text
     display: 'MailerLite API Key'
+    width: 50
   forms_section:
     type: section
     display: Forms
