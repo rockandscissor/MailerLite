@@ -1,5 +1,5 @@
 name: MailerLite
-version: '1.0'
+version: '1.0.0'
 description: 'Subscribe contact form submissions to your MailerLite lists'
 url: 'https://www.rockandscissor.com/store/statamic'
 developer: 'Rock & Scissor'
