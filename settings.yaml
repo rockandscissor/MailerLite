@@ -1,0 +1,65 @@
+fields:
+  mailerlite_api_key:
+    type: text
+    display: 'MailerLite API Key'
+  forms_section:
+    type: section
+    display: Forms
+    hide_when: noApiKey
+  forms:
+    type: grid
+    display: ' '
+    instructions: 'Add a row for each form you want to capture subscribers from'
+    fields:
+      form:
+        type: form
+        instructions: 'Select the form you wish to use'
+        width: 50
+        max_items: 1
+      subscriber_group:
+        type: suggest
+        mode: MailerLite.SubscriberGroup
+        display: 'Subscriber Group'
+        instructions: 'Optional: Which group would you like subscribers to be added to?'
+        width: 50
+        max_items: 1
+      mapped_name_field:
+        type: text
+        display: 'Name Field'
+        instructions: 'Defaults to `name`, if your form uses a different field name change it here'
+        default: name
+        width: 50
+      mapped_email_field:
+        type: text
+        display: 'Email Field'
+        instructions: 'Defaults to `email`, if your form uses a different field name change it here'
+        default: email
+        width: 50
+      auto_split_name:
+        type: toggle
+        display: 'Automatically Split Name'
+        instructions: 'Split into `name` and `last_name` on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a>, this setting is ignored if you map `last_name` seperately'
+        default: true
+      mapped_fields:
+        type: grid
+        display: 'Mapped Fields'
+        instructions: 'If you want to map other Form fields to your Subscriber fields you can set them up here'
+        fields:
+          subscriber_field:
+            type: suggest
+            mode: MailerLite.SubscriberFields
+            display: 'Subscriber Field'
+            instructions: 'These are all the fields in your <a href="https://app.mailerlite.com" target="_blank">MailerLite</a> account'
+            width: 50
+            max_items: 1
+          mapped_form_field:
+            type: text
+            display: 'Form Field'
+            instructions: 'This should match a field name on your selected form, to use multiple fields seperate their names with a space'
+            width: 50
+        mode: stacked
+        add_row: Add Field
+    mode: stacked
+    min_rows: "1"
+    hide_when: noApiKey
+    add_row: Add Form
