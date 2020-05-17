@@ -25,13 +25,13 @@ fields:
         width: 50
         max_items: 1
       mapped_name_field:
-        type: text
+        type: tags
         display: 'Name Field'
         instructions: 'Defaults to `name`, if your form uses a different field name change it here'
         default: name
         width: 50
       mapped_email_field:
-        type: text
+        type: tags
         display: 'Email Field'
         instructions: 'Defaults to `email`, if your form uses a different field name change it here'
         default: email
@@ -41,6 +41,12 @@ fields:
         display: 'Automatically Split Name'
         instructions: 'Split into `name` and `last_name` on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a>, this setting is ignored if you map `last_name` seperately'
         default: true
+        width: 50
+      marketing_permissions:
+        type: tags
+        display: 'Marketing Permissions Field'
+        instructions: 'Optional: Adds GDPR acceptance field(s) to `marketing_permissions` on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a> which you may need to <a href="https://help.mailerlite.com/article/show/88106-checkboxes-and-marketing-permissions" target="_blank">setup</a> first'
+        width: 50
       mapped_fields:
         type: grid
         display: 'Mapped Fields'
@@ -54,7 +60,7 @@ fields:
             width: 50
             max_items: 1
           mapped_form_field:
-            type: text
+            type: tags
             display: 'Form Field'
             instructions: 'This should match a field name on your selected form, to use multiple fields seperate their names with a space'
             width: 50
