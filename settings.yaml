@@ -24,13 +24,13 @@ fields:
         instructions: 'Optional: Which group would you like subscribers to be added to?'
         width: 50
         max_items: 1
-      mapped_name_field:
+      name_fields:
         type: tags
         display: 'Name Field'
         instructions: 'Defaults to `name`, if your form uses a different field name change it here'
         default: name
         width: 50
-      mapped_email_field:
+      email_field:
         type: tags
         display: 'Email Field'
         instructions: 'Defaults to `email`, if your form uses a different field name change it here'
@@ -41,28 +41,32 @@ fields:
         display: 'Automatically Split Name'
         instructions: 'Split into `name` and `last_name` on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a>, this setting is ignored if you map `last_name` seperately'
         default: true
+        width: 100
+      marketing_optin_field:
+        type: tags
+        display: 'Opt-in Field'
+        instructions: 'Optional: This field should be an un-ticked checkbox that conforms to the GDPR Regulations'
         width: 50
-      marketing_permissions:
+        max_items: 1
+      marketing_permissions_fields:
         type: tags
         display: 'Marketing Permissions Field'
-        instructions: 'Optional: Adds GDPR acceptance field(s) to `marketing_permissions` on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a> which you may need to <a href="https://help.mailerlite.com/article/show/88106-checkboxes-and-marketing-permissions" target="_blank">setup</a> first'
+        instructions: 'Optional: You will need to setup a `marketing_permissions` field on <a href="https://app.mailerlite.com" target="_blank">MailerLite</a>, for more info see <a href="https://help.mailerlite.com/article/show/88106-checkboxes-and-marketing-permissions" target="_blank">this article</a>'
         width: 50
       mapped_fields:
         type: grid
         display: 'Mapped Fields'
-        instructions: 'If you want to map other Form fields to your Subscriber fields you can set them up here'
+        instructions: 'Optional: You can map <a href="https://app.mailerlite.com" target="_blank">MailerLite</a> each Subscriber Field to Form Fields here'
         fields:
           subscriber_field:
             type: suggest
             mode: MailerLite.SubscriberFields
             display: 'Subscriber Field'
-            instructions: 'These are all the fields in your <a href="https://app.mailerlite.com" target="_blank">MailerLite</a> account'
             width: 50
             max_items: 1
-          mapped_form_field:
+          mapped_form_fields:
             type: tags
             display: 'Form Field'
-            instructions: 'This should match a field name on your selected form, to use multiple fields seperate their names with a space'
             width: 50
         mode: stacked
         add_row: Add Field
