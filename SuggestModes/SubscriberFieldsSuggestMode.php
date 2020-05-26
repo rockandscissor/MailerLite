@@ -20,7 +20,7 @@ class SubscriberFieldsSuggestMode extends AbstractMode
         foreach ($allFields as &$field) {
 
             // Check this isn't the name or email field
-            if (!($field->key == 'name' || $field->key == 'email')) {
+            if (!($field->key == 'name' || $field->key == 'email' || $field->key == 'marketing_permissions')) {
 
                 // Add Field to Suggest Options
                 $suggestOptions[] = ['value' => $field->key, 'text' => $field->title];
