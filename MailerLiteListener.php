@@ -45,7 +45,6 @@ class MailerLiteListener extends Listener
 
                     // Add Subscriber to MailerLite
                     $this->addSubscriber($config, $submission);
-
                 }
             }
         }
@@ -98,54 +97,57 @@ class MailerLiteListener extends Listener
      */
     private function addSubscriber($config, $submission)
     {
-        // Setup arrays
-        $data = [];
-
         // Connect to MailerLite
-        $mailerliteClient = new MailerLite($this->getConfig('mailerlite_api_key'));
+        $mailerliteSubscribersApi = (new MailerLite($this->getConfig('mailerlite_api_key')))->subscribers();
 
         // Set data for name and email fields
-        $data = [
-            'name' => $submission->get(Arr::get($config, 'name_fields')),
+        $subscriber_data = [
+            'fields' => [
+              'name' => $submission->get(Arr::get($config, 'name_fields')),
+            ],
             'email' => $submission->get(Arr::get($config, 'email_field')),
         ];
+
 
         // Check if Automatic Name Split is configured
         if ($auto_split_name = Arr::get($config, 'auto_split_name', true)) {
 
             // Split name by first space character
-            $name_array = explode(' ', $data['name'], 2);
+            $name_array = explode(' ', $subscriber_data['fields']['name'], 2);
 
             // Set data
-            $data['name'] = $name_array[0];
-            $data['last_name'] = $name_array[1];
-
+            $subscriber_data['fields']['name'] = $name_array[0];
+            $subscriber_data['fields']['last_name'] = $name_array[1] ?? '';
         }
 
         // Check if Opt-in field has been set
         if ($marketing_optin = Arr::get($config, 'auto_split_name', true)) {
-
-
-
         }
 
         // Check for mapped fields
         if ($mapped_fields = Arr::get($config, 'mapped_fields')) {
 
             // Loop through mapped fields
-            $data['fields'] = collect($mapped_fields)->map(function ($item, $key) use ($submission) {
-                if (is_null($fieldData = $submission->get($item['mapped_form_fields']))) {
-                    return [];
-                }
+            collect($mapped_fields)->map(function ($item, $key) use ($submission, $config, &$subscriber_data) {
 
-                // convert arrays to strings...Mailchimp don't like no arrays
-                return [
-                    $item['tag'] => is_array($fieldData) ? implode('|', $fieldData) : $fieldData,
-                ];
+                // Store the submission data in an array for easy reference later on
+                $submission_data = $submission->get(Arr::get($config, false));
+
+                if (!empty($item["mapped_form_fields"])) { // In case there is no mapped form field
+
+                    // Loop through each mapped form field for the given item and store in an array in prep for imploding
+                    foreach ($item["mapped_form_fields"] as $form_field) {
+                        $array[] = $submission_data[$form_field];
+                    }
+
+                    // Add named subscriber field index to the MailerLite payload using a pointed reference to $subscriber_data
+                    $subscriber_data['fields'][$item['subscriber_field']] = implode(", ", $array);
+                }
             });
-            die(print_r($data['fields']));
         }
 
+        // Use the MailerLite Subscriber API to add the subscriber
+        $addedSubscriber = $mailerliteSubscribersApi->create($subscriber_data);
     }
 
     /**
