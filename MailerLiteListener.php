@@ -146,8 +146,13 @@ class MailerLiteListener extends Listener
             });
         }
 
+        // Set options for api parameters
+        $subscriber_options = [
+            'resubscribe' => true
+        ];
+
         // Use the MailerLite Subscriber API to add the subscriber
-        $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data);
+        $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data, $subscriber_options);
 
         // Check response for errors
         if (array_key_exists('error', $response)) {
