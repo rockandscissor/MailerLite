@@ -15,7 +15,7 @@ class MailerLiteListener extends Listener
      * @var array
      */
     public $events = [
-        'Form.submission.created' => 'formSubmissionCreated',
+        'Form.submission.creating' => 'formSubmissionCreating',
     ];
 
     /**
@@ -25,7 +25,7 @@ class MailerLiteListener extends Listener
      *
      * @throws
      */
-    public function formSubmissionCreated($submission)
+    public function formSubmissionCreating($submission)
     {
         // Setup arrays
         $config = [];
@@ -44,10 +44,13 @@ class MailerLiteListener extends Listener
                 if ($this->checkMarketingPermissions($config, $submission)) {
 
                     // Add Subscriber to MailerLite
-                    $this->addSubscriber($config, $submission);
+                    return $submission = $this->addSubscriber($config, $submission);
+
                 }
             }
         }
+
+        return;
     }
 
     /**
@@ -97,6 +100,7 @@ class MailerLiteListener extends Listener
      */
     private function addSubscriber($config, $submission)
     {
+
         // Connect to MailerLite
         $mailerlite = new MailerLite($this->getConfig('mailerlite_api_key'));
 
@@ -108,7 +112,6 @@ class MailerLiteListener extends Listener
             'email' => $submission->get(Arr::get($config, 'email_field')),
         ];
 
-
         // Check if Automatic Name Split is configured
         if ($auto_split_name = Arr::get($config, 'auto_split_name', true)) {
 
@@ -118,10 +121,7 @@ class MailerLiteListener extends Listener
             // Set data
             $subscriber_data['fields']['name'] = $name_array[0];
             $subscriber_data['fields']['last_name'] = $name_array[1] ?? '';
-        }
 
-        // Check if Opt-in field has been set
-        if ($marketing_optin = Arr::get($config, 'auto_split_name', true)) {
         }
 
         // Check for mapped fields
@@ -156,8 +156,17 @@ class MailerLiteListener extends Listener
 
         // Check response for errors
         if (array_key_exists('error', $response)) {
+
+            // Generate error to the log
             \Log::error($response['error']['message']);
+
         }
+
+        // Return the submission
+        return [
+            'submission' => $submission
+        ];
+
     }
 
     /**
