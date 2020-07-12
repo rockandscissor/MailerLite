@@ -98,7 +98,7 @@ class MailerLiteListener extends Listener
     private function addSubscriber($config, $submission)
     {
         // Connect to MailerLite
-        $mailerliteSubscribersApi = (new MailerLite($this->getConfig('mailerlite_api_key')))->subscribers();
+        $mailerlite = new MailerLite($this->getConfig('mailerlite_api_key'));
 
         // Set data for name and email fields
         $subscriber_data = [
@@ -147,7 +147,12 @@ class MailerLiteListener extends Listener
         }
 
         // Use the MailerLite Subscriber API to add the subscriber
-        $addedSubscriber = $mailerliteSubscribersApi->create($subscriber_data);
+        $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data);
+
+        // Check response for errors
+        if (array_key_exists('error', $response)) {
+            \Log::error($response['error']['message']);
+        }
     }
 
     /**
