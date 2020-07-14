@@ -199,17 +199,4 @@ class MailerLiteListener extends Listener
         });
     }
 
-    /**
-     * Get the configuration for the submission
-     *
-     * @param $formset_name string
-     *
-     * @return mixed
-     */
-    private function getFormConfiguration($formset_name)
-    {
-        return collect($this->getConfig('forms'))->first(function ($ignored, $data) use ($formset_name) {
-            return $formset_name == Arr::get($data, 'form');
-        });
-    }
 }
