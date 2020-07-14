@@ -100,14 +100,13 @@ class MailerLiteListener extends Listener
      */
     private function addSubscriber($config, $submission)
     {
-
         // Connect to MailerLite
         $mailerlite = new MailerLite($this->getConfig('mailerlite_api_key'));
 
         // Set data for name and email fields
         $subscriber_data = [
             'fields' => [
-              'name' => $submission->get(Arr::get($config, 'name_fields')),
+                'name' => $submission->get(Arr::get($config, 'name_field')),
             ],
             'email' => $submission->get(Arr::get($config, 'email_field')),
         ];
@@ -151,14 +150,31 @@ class MailerLiteListener extends Listener
             'resubscribe' => true
         ];
 
-        // Use the MailerLite Subscriber API to add the subscriber
-        $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data, $subscriber_options);
+        // Check if subscriber group was setup
+        if (isset($config['subscriber_group'])) {
+
+            // Use the MailerLite Groups API to add the subscriber to a group
+            $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data, $subscriber_options);
+
+        } else {
+
+            // Use the MailerLite Subscriber API to add the subscriber
+            $response = $mailerlite->subscribers()->create($subscriber_data, $subscriber_options);
+
+        }
+
+
 
         // Check response for errors
         if (array_key_exists('error', $response)) {
 
             // Generate error to the log
-            \Log::error($response['error']['message']);
+            \Log::error("MailerLite - " . $response['error']['message']);
+
+        } else if (empty($response)) {
+
+            // Generate error to the log
+            \Log::error("MailerLite - Bad Request");
 
         }
 
@@ -167,6 +183,20 @@ class MailerLiteListener extends Listener
             'submission' => $submission
         ];
 
+    }
+
+    /**
+     * Combine multiple mapped fields
+     *
+     * @param $formset_name string
+     *
+     * @return mixed
+     */
+    private function getFormConfiguration($formset_name)
+    {
+        return collect($this->getConfig('forms'))->first(function ($ignored, $data) use ($formset_name) {
+            return $formset_name == Arr::get($data, 'form');
+        });
     }
 
     /**

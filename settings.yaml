@@ -24,7 +24,7 @@ fields:
         instructions: 'Optional: Which group would you like subscribers to be added to?'
         width: 50
         max_items: 1
-      name_fields:
+      name_field:
         type: tags
         display: 'Name Field'
         instructions: 'Defaults to `name`, if your form uses a different field name change it here'
