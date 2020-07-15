@@ -45,7 +45,6 @@ class MailerLiteListener extends Listener
 
                     // Add Subscriber to MailerLite
                     return $submission = $this->addSubscriber($config, $submission);
-
                 }
             }
         }
@@ -120,7 +119,6 @@ class MailerLiteListener extends Listener
             // Set data
             $subscriber_data['fields']['name'] = $name_array[0];
             $subscriber_data['fields']['last_name'] = $name_array[1] ?? '';
-
         }
 
         // Check for mapped fields
@@ -136,7 +134,9 @@ class MailerLiteListener extends Listener
 
                     // Loop through each mapped form field for the given item and store in an array in prep for imploding
                     foreach ($item["mapped_form_fields"] as $form_field) {
-                        $array[] = $submission_data[$form_field];
+                        if (array_key_exists($form_field, $submission_data)) { // Check if the array key exists
+                            $array[] = $submission_data[$form_field];
+                        }
                     }
 
                     // Add named subscriber field index to the MailerLite payload using a pointed reference to $subscriber_data
@@ -155,12 +155,10 @@ class MailerLiteListener extends Listener
 
             // Use the MailerLite Groups API to add the subscriber to a group
             $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $subscriber_data, $subscriber_options);
-
         } else {
 
             // Use the MailerLite Subscriber API to add the subscriber
             $response = $mailerlite->subscribers()->create($subscriber_data, $subscriber_options);
-
         }
 
 
@@ -170,19 +168,16 @@ class MailerLiteListener extends Listener
 
             // Generate error to the log
             \Log::error("MailerLite - " . $response['error']['message']);
-
-        } else if (empty($response)) {
+        } elseif (empty($response)) {
 
             // Generate error to the log
             \Log::error("MailerLite - Bad Request");
-
         }
 
         // Return the submission
         return [
             'submission' => $submission
         ];
-
     }
 
     /**
@@ -198,5 +193,4 @@ class MailerLiteListener extends Listener
             return $formset_name == Arr::get($data, 'form');
         });
     }
-
 }
