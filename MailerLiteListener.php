@@ -193,7 +193,7 @@ class MailerLiteListener extends Listener
     }
 
     /**
-     * Map the fields ready for paylod sent to MailerLite
+     * Map the fields ready for payload sent to MailerLite
      *
      * @param $fieldName string
      * @param $fieldArr array
