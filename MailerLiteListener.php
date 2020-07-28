@@ -116,7 +116,7 @@ class MailerLiteListener extends Listener
         $mailerlite = new MailerLite($this->getConfig('mailerlite_api_key'));
 
         // Set data email field
-        $this->subscriber_data['email'] = $submission->get($config['email_field'][0]);
+        $this->subscriber_data['email'] = $submission->get($config['email_field']);
 
         if (!empty($config['name_field'])) { // Check if name_field is set
             $this->doMapFields('name', $config['name_field'], $submission_data, ' ');
@@ -151,7 +151,7 @@ class MailerLiteListener extends Listener
 
         // Check if subscriber group was setup
         if (isset($config['subscriber_group'])) {
-
+          
             // Use the MailerLite Groups API to add the subscriber to a group
             $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $this->subscriber_data, $subscriber_options);
         } else {
@@ -165,7 +165,7 @@ class MailerLiteListener extends Listener
         if (array_key_exists('error', $response)) {
 
             // Generate error to the log
-            \Log::error("MailerLite - " . $response['error']['message']);
+            \Log::error("MailerLite - " . $response->error->message);
         } elseif (empty($response)) {
 
             // Generate error to the log
