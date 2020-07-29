@@ -1,6 +1,6 @@
 name: MailerLite
 version: '1.0.0'
-description: 'Subscribe contact form submissions to your MailerLite lists'
-url: 'https://www.rockandscissor.com/store/statamic'
+description: 'Lets you to subscribe contact form submissions to your MailerLite subscriber list'
+addon_url: http://statamic.com/addons/mailerlite-for-v2
 developer: 'Rock & Scissor'
 developer_url: 'https://www.rockandscissor.com'
