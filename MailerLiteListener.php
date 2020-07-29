@@ -26,6 +26,8 @@ class MailerLiteListener extends Listener
             ],
             'email' => false,
         ];
+
+        $this->last_name_field_exists = false;
     }
 
     /**
@@ -122,9 +124,24 @@ class MailerLiteListener extends Listener
             $this->doMapFields('name', $config['name_field'], $submission_data, ' ');
         }
 
+        // Check for mapped fields
+        if ($mapped_fields = Arr::get($config, 'mapped_fields')) {
+            // Loop through mapped fields
+            collect($mapped_fields)->map(function ($item, $key) use ($submission_data) {
+                if (!empty($item["mapped_form_fields"])) { // In case there is no mapped form field
+                    // Check if mapped fields contain last_name
+                    if ($item['subscriber_field'] == 'last_name') {
+                        $this->last_name_field_exists = true;
+                    }
+                    $this->doMapFields($item['subscriber_field'], $item["mapped_form_fields"], $submission_data);
+                }
+            });
+        }
+
         // Check if Automatic Name Split is configured
         if ($auto_split_name = Arr::get($config, 'auto_split_name', true)) {
-            if (count($config['name_field']) === 1) { // If we don't have more than 1 mapped field to the name name field
+            // If we don't have more than 1 mapped field to the name name field and there is no last_name field mapped
+            if (count($config['name_field']) === 1 && $this->last_name_field_exists === false) {
                 // Split name by first space character
                 $name_array = explode(' ', $this->subscriber_data['fields']['name'], 2);
 
@@ -133,17 +150,7 @@ class MailerLiteListener extends Listener
                 $this->subscriber_data['fields']['last_name'] = $name_array[1] ?? '';
             }
         }
-
-        // Check for mapped fields
-        if ($mapped_fields = Arr::get($config, 'mapped_fields')) {
-            // Loop through mapped fields
-            collect($mapped_fields)->map(function ($item, $key) use ($submission_data) {
-                if (!empty($item["mapped_form_fields"])) { // In case there is no mapped form field
-                    $this->doMapFields($item['subscriber_field'], $item["mapped_form_fields"], $submission_data);
-                }
-            });
-        }
-
+        
         // Set options for api parameters
         $subscriber_options = [
             'resubscribe' => true
@@ -151,11 +158,9 @@ class MailerLiteListener extends Listener
 
         // Check if subscriber group was setup
         if (isset($config['subscriber_group'])) {
-          
             // Use the MailerLite Groups API to add the subscriber to a group
             $response = $mailerlite->groups()->addSubscriber($config['subscriber_group'], $this->subscriber_data, $subscriber_options);
         } else {
-
             // Use the MailerLite Subscriber API to add the subscriber
             $response = $mailerlite->subscribers()->create($this->subscriber_data, $subscriber_options);
         }
