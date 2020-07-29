@@ -21,7 +21,7 @@ Copy the files into a folder called `MailerLite` and run `php please update:addo
 
 ## Developers
 
-Matt Stone, Craig Bowler
+Matt Stone, Craig Bowler, Jamie McGrory
 
 ## Contributing
 
