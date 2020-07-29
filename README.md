@@ -22,3 +22,7 @@ Copy the files into a folder called `MailerLite` and run `php please update:addo
 ## Developers
 
 Matt Stone, Craig Bowler
+
+## Contributing
+
+See our [contributing guide](https://github.com/rockandscissor/MailerLite/blob/master/CONTRIBUTING.md) for more information.
