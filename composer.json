@@ -1,6 +1,7 @@
 {
     "name": "rock-scissor/mailerlite",
     "require": {
-        "mailerlite/mailerlite-api-v2-php-sdk": "*"
+        "mailerlite/mailerlite-api-v2-php-sdk": "0.3.*",
+        "php-http/guzzle6-adapter": "^2.0"
     }
 }
